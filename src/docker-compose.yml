@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  #database section
+  sqlserverdb:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+  
+  mysqldb:
+    image: mysql:8.0.29
+
+
+#network section
+networks:
+  default:
+    name: tedu_microservices
+    driver: bridge
+    
+#volumes section
+volumes:
+  sqlserver_data:
+    name: sqlserver_data
+  mysql_data:
+    name: mysql_data
