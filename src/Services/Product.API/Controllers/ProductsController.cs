@@ -84,7 +84,7 @@ public class ProductsController : ControllerBase
             return NotFound();
 
         await _repository.DeleteProduct(id);
-        await _repository.SaveChangesAsync();
+        // await _repository.SaveChangesAsync();
 
         return NoContent();
     }
