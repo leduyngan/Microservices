@@ -7,6 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\Microservice_Tedu\Tài Liệu\TeduNote\Asp.net-microservice-dat\resources\Tedu-Microservices-Solution_Architect.jpg = ..\Microservice_Tedu\Tài Liệu\TeduNote\Asp.net-microservice-dat\resources\Tedu-Microservices-Solution_Architect.jpg
 		src\docker-compose.override.yml = src\docker-compose.override.yml
 		src\docker-compose.yml = src\docker-compose.yml
+		.dockerignore = .dockerignore
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F40E5820-B982-4742-93B5-77BCA4BDA08B}"
