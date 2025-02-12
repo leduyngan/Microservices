@@ -42,9 +42,8 @@ public static class ServiceExtensions
 
     private static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
     {
-        return services.AddScoped(typeof(IRepositoryBaseAsync<,,>), typeof(RepositoryBaseAsyncAsync<,,>))
+        return services.AddScoped(typeof(IRepositoryBaseAsync<,,>), typeof(RepositoryBaseAsync<,,>))
                 .AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>))
-                .AddScoped<IProductRepository, ProductRepository>()
-            ;
+                .AddScoped<IProductRepository, ProductRepository>();
     }
 }
