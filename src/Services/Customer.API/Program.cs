@@ -27,14 +27,14 @@ try
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionString");
     builder.Services.AddDbContext<CustomerContext>(options => options.UseNpgsql(connectionString));
 
-    builder.Services.AddScoped(typeof(IRepositoryBaseAsync<,,>), typeof(RepositoryBaseAsync<,,>))
+    builder.Services.AddScoped(typeof(IRepositoryBaseAsync<,,>), typeof(RepositoryBase<,,>))
         .AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>))
         .AddScoped<ICustomerRepository, CustomerRepository>()
         .AddScoped<ICustomerService, CustomerService>();
 
     var app = builder.Build();
 
-    app.MapGet("/", () => "Welcome to Customer API!");
+    app.MapGet("/", () => "Welcome to Customer Minimal API!");
     app.MapGet("/api/customers", async (ICustomerService customerService) => await customerService.GetCustomersAsync());
     app.MapCustomersAPI();
     app.MapPost("/api/customers",
@@ -57,10 +57,14 @@ try
     if (app.Environment.IsDevelopment())
     {
         app.UseSwagger();
-        app.UseSwaggerUI();
+        app.UseSwaggerUI(c =>
+        {
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json",
+                $"{builder.Environment.ApplicationName} v1"));
+        });
     }
 
-    app.UseHttpsRedirection();
+    // app.UseHttpsRedirection(); //production only
 
     app.UseAuthorization();
 

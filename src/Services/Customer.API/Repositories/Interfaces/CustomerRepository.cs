@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Customer.API.Repositories.Interfaces;
 
-public class CustomerRepository: RepositoryBaseAsync<Entities.Customer,int,CustomerContext>, ICustomerRepository
+public class CustomerRepository: RepositoryBase<Entities.Customer,int,CustomerContext>, ICustomerRepository
 {
     public CustomerRepository(CustomerContext dbContext, IUnitOfWork<CustomerContext> unitOfWork) : base(dbContext, unitOfWork)
     {
