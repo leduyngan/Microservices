@@ -32,7 +32,7 @@ public class BasketController : ControllerBase
     {
         var option = new DistributedCacheEntryOptions()
             .SetAbsoluteExpiration(DateTime.UtcNow.AddHours(1))
-            .SetSlidingExpiration(TimeSpan.FromMinutes(5));
+            .SetSlidingExpiration(TimeSpan.FromMinutes(10));
         
         var result = await _repository.UpdateBasket(cart, option);
         return Ok(result);

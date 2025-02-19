@@ -13,7 +13,7 @@ public static class ServiceExtensions
 
     public static void ConfigureRedis(this IServiceCollection services, IConfiguration configuration)
     {
-        var redisConnnectionString = configuration.GetSection("CacheSetting:ConnectionString").Value;
+        var redisConnnectionString = configuration.GetSection("CacheSettings:ConnectionString").Value;
         if (string.IsNullOrEmpty(redisConnnectionString))
         {
             throw new ArgumentNullException("Redis connection string is not configured.");
