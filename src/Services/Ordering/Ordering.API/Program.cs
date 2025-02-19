@@ -1,5 +1,6 @@
 using Common.Logging;
 using Ordering.Infrastructure;
+using Ordering.Infrastructure.Persistence;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,6 +27,13 @@ try
         app.UseSwaggerUI();
     }
 
+    using (var scope = app.Services.CreateScope())
+    {
+        var orderContextSeed = scope.ServiceProvider.GetRequiredService<OrderContextSeed>();
+        await orderContextSeed.InitialiseAsync();
+        await orderContextSeed.SeedAsync();
+    }
+
     app.UseHttpsRedirection();
 
     app.UseAuthorization();
@@ -34,12 +42,15 @@ try
 
     app.Run();
 }
-catch (Exception e)
+catch (Exception ex)
 {
-    Log.Fatal(e, "Unhandled exception");
+    string type = ex.GetType().Name;
+    if (type.Equals("StopTheHostException", StringComparison.Ordinal)) throw;
+
+    Log.Fatal(ex, $"Unhandled exception: {ex.Message}");
 }
 finally
 {
-    Log.Information("Shut down Ordering API copmlete");
+    Log.Information("Shut down Customer API copmlete");
     Log.CloseAndFlush();
 }
