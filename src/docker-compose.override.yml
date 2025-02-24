@@ -136,7 +136,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
-      - "DatabaseSettings:ConnectionString=Server=customerdb;Port=5432;Database=CustomerDb;User Id=admin;Password=admin1234"
+      - "ConnectionStrings:DefaultConnectionString=Server=customerdb;Port=5432;Database=CustomerDb;User Id=admin;Password=admin1234"
+     # - "DatabaseSettings:ConnectionString=Server=customerdb;Port=5432;Database=CustomerDb;User Id=admin;Password=admin1234"
     depends_on:   
       - customerdb
     ports:
@@ -158,21 +159,21 @@ services:
 #      - rabbitmq
     ports:
       - "6004:80"
-    restart: always
+    restart: always 
     
-    # ordering.api:
-    #   container_name: ordering.api
-    #   environment:
-    #     - ASPNETCORE_ENVIRONMENT=Development
-    #     - ASPNETCORE_URLS=http://+:80
-    #     - "DatabaseSettings:ConnectionString=Server=orderdb;Database=OrderDb;User Id=sa;Password=Passw0rd!;Multipleactiveresultsets=true"
-    #     - "EventBusSettings:HostAddress=amqp://guest:guest@rabbitmq:5672"
-    #   depends_on:
-    #     - orderdb
-    #     - rabbitmq
-    #   ports:
-    #     - "6005:80"
-    #   restart: always
+  ordering.api:
+    container_name: ordering.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - "ConnectionStrings:DefaultConnectionString=Server=orderdb;Database=OrderDb;User Id=sa;Password=Passw0rd!;Multipleactiveresultsets=true"
+      - "EventBusSettings:HostAddress=amqp://guest:guest@rabbitmq:5672"
+    depends_on:
+      - orderdb
+      # - rabbitmq
+    ports:
+      - "6005:80"
+    restart: always
     
     # inventory.product.api:
     #   container_name: inventory.product.api
