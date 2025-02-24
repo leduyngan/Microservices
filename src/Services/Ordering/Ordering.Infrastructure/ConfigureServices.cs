@@ -1,5 +1,8 @@
 using Contracts.Common.Interfaces;
+using Contracts.Services;
 using Infrastructure.Common.Interfaces;
+using Infrastructure.Services;
+using MailKit.Net.Smtp;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +25,7 @@ public static class ConfigureServices
         services.AddScoped<OrderContextSeed>();
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
+        services.AddScoped(typeof(ISmtpEmailService), typeof(SmtpEmailService));
         return services;
     }
 }
