@@ -1,5 +1,7 @@
 using System.Reflection;
+using Contracts.Messages;
 using FluentValidation;
+using Infrastructure.Messages;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Ordering.Application.Common.Behaviours;
@@ -14,6 +16,6 @@ public static class ConfigureServices
             .AddMediatR(Assembly.GetExecutingAssembly())
             .AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>))
             .AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>))
-            .AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>))
-    ;
+            .AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+            //.AddScoped<IMessageProducer,RabbitMQProducer>();
 }

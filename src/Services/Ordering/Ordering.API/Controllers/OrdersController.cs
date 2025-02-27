@@ -1,9 +1,13 @@
 using System.ComponentModel.DataAnnotations;
 using System.Net;
+using AutoMapper;
+using Contracts.Messages;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Ordering.Application.Common.Interfaces;
 using Ordering.Application.Common.Models;
 using Ordering.Application.Features.V1.Orders;
+using Ordering.Domain.Entities;
 using Shared.SeedWork;
 
 namespace Ordering.API.Controllers;
@@ -13,10 +17,16 @@ namespace Ordering.API.Controllers;
 public class OrdersController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly IMessageProducer _messageProducer;
+    private readonly IOrderRepository _repository;
+    private readonly IMapper _mapper;
 
-    public OrdersController(IMediator mediator)
+    public OrdersController(IMediator mediator, IMessageProducer messageProducer, IOrderRepository orderRepository, IMapper mapper)
     {
         _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+        _messageProducer = messageProducer ?? throw new ArgumentNullException(nameof(messageProducer));
+        _repository = orderRepository;
+        _mapper = mapper;
     }
 
     private static class RouteNames
@@ -28,7 +38,7 @@ public class OrdersController : ControllerBase
     }
 
     #region CRUD
-
+    
     [HttpGet("{username}", Name = RouteNames.GetOrders)]
     [ProducesResponseType(typeof(IEnumerable<OrderDto>), (int)HttpStatusCode.OK)]
     public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrdersByUserName([Required] string username)
@@ -38,13 +48,13 @@ public class OrdersController : ControllerBase
         return Ok(result);
     }
     
-    [HttpPost(Name = RouteNames.CreateOrder)]
-    [ProducesResponseType(typeof(ApiResult<long>), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<ApiResult<long>>> CreateOrder([FromBody]CreateOrderCommand command)
-    {
-        var result = await _mediator.Send(command);
-        return Ok(result);
-    }
+    // [HttpPost(Name = RouteNames.CreateOrder)]
+    // [ProducesResponseType(typeof(ApiResult<long>), (int)HttpStatusCode.OK)]
+    // public async Task<ActionResult<ApiResult<long>>> CreateOrder([FromBody]CreateOrderCommand command)
+    // {
+    //     var result = await _mediator.Send(command);
+    //     return Ok(result);
+    // }
     
     [HttpPut("{id:long}",Name = RouteNames.UpdateOrder)]
     [ProducesResponseType(typeof(ApiResult<OrderDto>), (int)HttpStatusCode.OK)]
@@ -65,4 +75,16 @@ public class OrdersController : ControllerBase
     }
     
     #endregion
+
+    [HttpPost(Name = "CreateOrderTestRabbitMq")]
+    [ProducesResponseType(typeof(IEnumerable<OrderDto>), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult<OrderDto>> CreateOrderTestRabbitMq(OrderDto orderDto)
+    {
+        var order = _mapper.Map<Order>(orderDto);
+        var result = await  _repository.CreateOrderTestRabbitMq(order);
+        // var result = _mapper.Map<OrderDto>(orderResponse);
+        order.Id = result;
+        _messageProducer.SendMessage(order);
+        return Ok(order);
+    }
 }

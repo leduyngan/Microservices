@@ -17,6 +17,11 @@ public class OrderRepository : RepositoryBase<Order, long, OrderContext>, IOrder
         await FindByCondition(x => x.UserName.Equals(userName)).ToListAsync();
     
     public void CreateOrder(Order order) => Create(order);
+    public async Task<long> CreateOrderTestRabbitMq(Order order)
+    {
+        var result = await CreateAsync(order);
+        return result;
+    }
 
     public async Task<Order> UpdateOrderAsync(Order order)
     {
