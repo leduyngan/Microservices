@@ -6,7 +6,7 @@ public class BasketCheckout
 {
     [Required]
     public string UserName { get; set; }
-    public decimal TotalPrice { get; set; }
+    //public decimal TotalPrice { get; set; }
     [Required]
     public string FirstName { get; set; }
     [Required]

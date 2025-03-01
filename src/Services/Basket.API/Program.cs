@@ -1,5 +1,7 @@
+using Basket.API;
 using Basket.API.Extensions;
 using Common.Logging;
+using Org.BouncyCastle.Cms;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,8 +15,16 @@ try
     builder.Host.AddAppConfigurations();
     
     // Add services to the container.
+    
+    
+    
+    builder.Services.AddConfigurationSettings(builder.Configuration);
+    builder.Services.AddAutoMapper(cfg => cfg.AddProfile(new MappingProfile()));
     builder.Services.ConfigureServices();
     builder.Services.ConfigureRedis(builder.Configuration);
+    
+    // Configure mass transit
+    builder.Services.ConfigureMassTransit();
     builder.Services.AddControllers();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
