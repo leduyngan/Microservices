@@ -1,8 +1,6 @@
-using EventBus.Messages.IntergrationEvents.Interfaces;
+namespace EventBus.Messages.IntegrationEvents.Interfaces;
 
-namespace EventBus.Messages.IntergrationEvents.Events;
-
-public record BasketCheckOutEvent() : IntegrationEvent, IBasketCheckOutEvent
+public interface IBasketCheckOutEvent : IIntegrationEvent
 {
     public string UserName { get; set; }
     public decimal TotalPrice { get; set; }

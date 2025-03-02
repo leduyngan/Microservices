@@ -3,7 +3,7 @@ using System.Net;
 using AutoMapper;
 using Basket.API.Entities;
 using Basket.API.Repositories.Interfaces;
-using EventBus.Messages.IntergrationEvents.Events;
+using EventBus.Messages.IntegrationEvents.Events;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
@@ -62,7 +62,7 @@ public class BasketController : ControllerBase
         var basket = await _repository.GetBasketByUserName(basketCheckout.UserName);
         if (basket == null) return NotFound();
         
-        var eventMessage = _mapper.Map<BasketCheckOutEvent>(basketCheckout);
+        var eventMessage = _mapper.Map<BasketCheckoutEvent>(basketCheckout);
         eventMessage.TotalPrice = basket.TotalPrice;
         _publishEndpoint.Publish(eventMessage);
         await _repository.DeleteBasketFromUserName(basketCheckout.UserName);

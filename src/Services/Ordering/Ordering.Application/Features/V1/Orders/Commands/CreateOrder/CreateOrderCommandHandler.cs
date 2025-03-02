@@ -32,7 +32,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Api
 
         await _orderRepository.SaveChangesAsync();
 
-        //_logger.Information($"Order {orderEntity.Id} - Document No: {orderEntity.DocumentNo} was successfully created.");
+        _logger.Information($"Order {orderEntity.Id} - Document No: {orderEntity.DocumentNo} was successfully created.");
 
         _logger.Information($"END: {MethodName} - Username: {request.UserName}");
         return new ApiSuccessResult<long>(orderEntity.Id);
