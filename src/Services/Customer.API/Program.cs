@@ -1,5 +1,5 @@
 using Common.Logging;
-using Contracts.Common.Interfaces;
+using Contracts.Domains.Interfaces;
 using Customer.API.Context;
 using Customer.API.Controllers;
 using Customer.API.Persistence;
@@ -27,7 +27,7 @@ try
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionString");
     builder.Services.AddDbContext<CustomerContext>(options => options.UseNpgsql(connectionString));
 
-    builder.Services.AddScoped(typeof(IRepositoryBaseAsync<,,>), typeof(RepositoryBase<,,>))
+    builder.Services.AddScoped(typeof(IRepositoryBase<,,>), typeof(RepositoryBase<,,>))
         .AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>))
         .AddScoped<ICustomerRepository, CustomerRepository>()
         .AddScoped<ICustomerService, CustomerService>();

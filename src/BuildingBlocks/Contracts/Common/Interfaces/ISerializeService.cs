@@ -1,4 +1,4 @@
-namespace Contracts.Common.Interfaces;
+namespace Contracts.Domains.Interfaces;
 
 public interface ISerializeService
 {

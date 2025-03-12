@@ -1,9 +1,9 @@
-using Contracts.Common.Interfaces;
+using Contracts.Domains.Interfaces;
 using Ordering.Domain.Entities;
 
 namespace Ordering.Application.Common.Interfaces;
 
-public interface IOrderRepository : IRepositoryBaseAsync<Order, long>
+public interface IOrderRepository : IRepositoryBase<Order, long>
 {
     Task<IEnumerable<Order>> GetOrdersByUserNameAsync(string userName);
     void CreateOrder(Order order);

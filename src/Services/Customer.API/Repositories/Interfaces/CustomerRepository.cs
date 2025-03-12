@@ -1,4 +1,4 @@
-using Contracts.Common.Interfaces;
+using Contracts.Domains.Interfaces;
 using Customer.API.Persistence;
 using Infrastructure.Common;
 using Microsoft.EntityFrameworkCore;

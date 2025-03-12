@@ -1,12 +1,12 @@
 using System.Linq.Expressions;
-using Contracts.Common.Interfaces;
+using Contracts.Domains.Interfaces;
 using Contracts.Domains;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Infrastructure.Common;
 
-public class RepositoryBase<T, K, TContext> : RepositoryQueryBase<T, K, TContext>, IRepositoryBaseAsync<T, K, TContext>
+public class RepositoryBase<T, K, TContext> : RepositoryQueryBase<T, K, TContext>, IRepositoryBase<T, K, TContext>
     where T : EntityBase<K>
     where TContext : DbContext
 {

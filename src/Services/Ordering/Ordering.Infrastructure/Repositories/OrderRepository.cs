@@ -1,4 +1,4 @@
-using Contracts.Common.Interfaces;
+using Contracts.Domains.Interfaces;
 using Infrastructure.Common;
 using Microsoft.EntityFrameworkCore;
 using Ordering.Application.Common.Interfaces;
@@ -17,6 +17,7 @@ public class OrderRepository : RepositoryBase<Order, long, OrderContext>, IOrder
         await FindByCondition(x => x.UserName.Equals(userName)).ToListAsync();
     
     public void CreateOrder(Order order) => Create(order);
+    public async Task<long>CreateOrderAsync(Order order) => await CreateAsync(order);
 
     public async Task<Order> UpdateOrderAsync(Order order)
     {

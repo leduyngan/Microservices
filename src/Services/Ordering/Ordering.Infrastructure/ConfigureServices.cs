@@ -1,4 +1,4 @@
-using Contracts.Common.Interfaces;
+using Contracts.Domains.Interfaces;
 using Contracts.Services;
 using Infrastructure.Common.Interfaces;
 using Infrastructure.Services;
