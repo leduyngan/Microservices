@@ -47,6 +47,7 @@ public static class ServiceExtensions
                 //     c.ConfigureConsumer<BasketCheckOutConsumer>(ctx);
                 // });
                 
+                // configure enpoints cho tất cả consumer của dự án
                 cfg.ConfigureEndpoints(ctx);
             });
         });
