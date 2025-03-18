@@ -3,6 +3,7 @@ using Inventory.Product.API.Entities;
 using Inventory.Product.API.Services;
 using Inventory.Product.API.Services.Interfaces;
 using MongoDB.Driver;
+using Shared.Configurations;
 
 namespace Inventory.Product.API.Extentions;
 
@@ -10,16 +11,16 @@ public static class ServiceExtentions
 {
     internal static IServiceCollection AddConfigurationSettings(this IServiceCollection services, IConfiguration configuration)
     {
-        var databaseSettings = configuration.GetSection(nameof(DatabaseSettings))
-            .Get<DatabaseSettings>();
-        services.AddSingleton(databaseSettings);
+        var mongoDbSetting = configuration.GetSection(nameof(MongoDbSettings))
+            .Get<MongoDbSettings>();
+        services.AddSingleton(mongoDbSetting);
         
         return services;
     }
 
     private static string GetMongoConnectionString(this IServiceCollection services)
     {
-        var settings = services.GetOption<DatabaseSettings>(nameof(DatabaseSettings));
+        var settings = services.GetOption<MongoDbSettings>(nameof(MongoDbSettings));
         if (settings == null || string.IsNullOrEmpty(settings.ConnectionString))
         {
             throw new ArgumentException("The database settings are not configured correctly.");

@@ -1,19 +1,19 @@
 using System.Linq.Expressions;
-using Inventory.Product.API.Entities.Abstraction;
-using Inventory.Product.API.Extentions;
-using Microsoft.EntityFrameworkCore;
-using MongoDB.Bson;
+using Contracts.Domains;
+using Contracts.Domains.Interfaces;
+using Infrastructure.Extensions;
 using MongoDB.Driver;
+using Shared.Configurations;
 
-namespace Inventory.Product.API.Repositories.Abstraction;
+namespace Infrastructure.Common;
 
 public class MongoDbRepository<T> : IMongoDbRepositoryBase<T> where T : MongoEntity
 {
     private IMongoDatabase Database { get; }
 
-    public MongoDbRepository(IMongoClient client, DatabaseSettings settings)
+    public MongoDbRepository(IMongoClient client, MongoDbSettings settingses)
     {
-        Database = client.GetDatabase(settings.DatabaseName);
+        Database = client.GetDatabase(settingses.DatabaseName);
     }
     
     public IMongoCollection<T> FindAll(ReadPreference? readPreference = null)
