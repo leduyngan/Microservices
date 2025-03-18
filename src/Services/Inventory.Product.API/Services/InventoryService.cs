@@ -30,7 +30,7 @@ public class InventoryService : MongoDbRepository<InventoryEntry>, IInventorySer
         return result;
     }
 
-    public async Task<IEnumerable<InventoryEntryDto>> GetAllByItemNoPageingAsync(GetInventoryPagingQuery query)
+    public async Task<PagedList<InventoryEntryDto>> GetAllByItemNoPageingAsync(GetInventoryPagingQuery query)
     {
         var filterSearchTerm = Builders<InventoryEntry>.Filter.Empty;
         var filterItemNo = Builders<InventoryEntry>.Filter.Eq(x => x.ItemNo, query.ItemNo());
@@ -60,7 +60,7 @@ public class InventoryService : MongoDbRepository<InventoryEntry>, IInventorySer
     {
         var entity = new InventoryEntry(ObjectId.GenerateNewId().ToString())
         {
-            ItemNo = model.ItemNo,
+            ItemNo = itemNo,
             Quantity = model.Quantity,
             DocumentType = model.DocumentType,
         };

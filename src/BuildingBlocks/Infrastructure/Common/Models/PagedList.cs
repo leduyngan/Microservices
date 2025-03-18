@@ -14,6 +14,7 @@ public class PagedList<T> : List<T>
             CurrentPage = pageIndex <= 0 ? 0 : pageIndex,
             TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize),
         };
+        AddRange(items);
     }
     
     private MetaData _metaData { get; }
@@ -29,6 +30,7 @@ public class PagedList<T> : List<T>
             .Limit(pageSize)
             .ToListAsync();
         
-        return new PagedList<T>(items, count, pageIndex, pageSize);
+        var result =  new PagedList<T>(items, count, pageIndex, pageSize);
+        return result;
     }
 }

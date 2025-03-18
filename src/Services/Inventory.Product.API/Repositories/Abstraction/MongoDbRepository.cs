@@ -40,7 +40,9 @@ public class MongoDbRepository<T> : IMongoDbRepositoryBase<T> where T : MongoEnt
 
     private static string GetCollectionName()
     {
-        return (typeof(T).GetCustomAttributes(typeof(BsonCollectionAttribute), true)
+        var result =  (typeof(T).GetCustomAttributes(typeof(BsonCollectionAttribute), true)
             .FirstOrDefault() as BsonCollectionAttribute)?.CollectionName;
+        
+        return result;
     }
 }
