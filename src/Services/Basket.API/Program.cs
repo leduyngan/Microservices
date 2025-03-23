@@ -22,6 +22,7 @@ try
     builder.Services.AddAutoMapper(cfg => cfg.AddProfile(new MappingProfile()));
     builder.Services.ConfigureServices();
     builder.Services.ConfigureRedis(builder.Configuration);
+    builder.Services.ConfigureGrpcServices();
     
     // Configure mass transit
     builder.Services.ConfigureMassTransit();

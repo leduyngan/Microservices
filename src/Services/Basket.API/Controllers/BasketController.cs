@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Net;
 using AutoMapper;
 using Basket.API.Entities;
+using Basket.API.GrpcServices;
 using Basket.API.Repositories.Interfaces;
 using EventBus.Messages.IntegrationEvents.Events;
 using MassTransit;
@@ -17,12 +18,14 @@ public class BasketController : ControllerBase
     private readonly IBasketRepository _repository;
     private readonly IPublishEndpoint _publishEndpoint;
     private readonly IMapper _mapper;
+    private readonly StockItemGrpcService _stockItemGrpcService;
 
-    public BasketController(IBasketRepository repository, IPublishEndpoint publishEndpoint, IMapper mapper)
+    public BasketController(IBasketRepository repository, IPublishEndpoint publishEndpoint, IMapper mapper, StockItemGrpcService stockItemGrpcService)
     {
-        _repository = repository;
-        _publishEndpoint = publishEndpoint;
-        _mapper = mapper;
+        _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        _publishEndpoint = publishEndpoint ?? throw new ArgumentNullException(nameof(publishEndpoint));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _stockItemGrpcService = stockItemGrpcService ?? throw new ArgumentNullException(nameof(stockItemGrpcService));
     }
     
     [HttpGet("{userName}", Name = "GetBasket")]
@@ -37,6 +40,12 @@ public class BasketController : ControllerBase
     [ProducesResponseType(typeof(Cart), (int)HttpStatusCode.OK)]
     public async Task<ActionResult<Cart>> UpdateBasket([FromBody] Cart cart)
     {
+        // Communicate with Inventory.Grpc and check quantity available of products
+        foreach (var item in cart.Items)
+        {
+            var stock = await _stockItemGrpcService.GetStock(item.ItemNo);
+            item.SetAvailableQuantity(stock.Quantity);
+        }
         var option = new DistributedCacheEntryOptions()
             .SetAbsoluteExpiration(DateTime.UtcNow.AddHours(1))
             .SetSlidingExpiration(TimeSpan.FromMinutes(10));
