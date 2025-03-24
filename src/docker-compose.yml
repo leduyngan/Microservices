@@ -61,17 +61,17 @@ services:
       context: .
       dockerfile: Services/Ordering/Ordering.API/Dockerfile
       
-      # inventory.product.api:
-      #   image: ${DOCKER_REGISTRY-}inventory-product-api:${PLATFORM:-linux}-${TAG:-latest}
-      #   build:
-      #     context: .
-      #     dockerfile: Services/Inventory/Inventory.Product.API/Dockerfile
+  inventory.product.api:
+    image: ${DOCKER_REGISTRY-}inventory-product-api:${PLATFORM:-linux}-${TAG:-latest}
+    build:
+      context: .
+      dockerfile: Services/Inventory/Inventory.Product.API/Dockerfile
     
-    # inventory.grpc:
-    #   image: ${DOCKER_REGISTRY-}inventory-grpc:${PLATFORM:-linux}-${TAG:-latest}
-    #   build:
-    #     context: .
-    #     dockerfile: Services/Inventory/Inventory.Grpc/Dockerfile
+  inventory.grpc:
+    image: ${DOCKER_REGISTRY-}inventory-grpc:${PLATFORM:-linux}-${TAG:-latest}
+    build:
+      context: .
+      dockerfile: Services/Inventory/Inventory.Grpc/Dockerfile
     
     # apigw.ocelot:
     #   image: ${DOCKER_REGISTRY-}apigw-ocelot:${PLATFORM:-linux}-${TAG:-latest}
