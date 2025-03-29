@@ -3,6 +3,7 @@
         "BaseUrl": "http://localhost:5000"
     },
     "Routes": [
+        // Customer api: http://localhost:5003/api/customers
         {
             "UpstreamPathTemplate": "/customers/{username}",
             "UpstreamHttpMethod": [
@@ -17,7 +18,197 @@
                     "Port": 5003
                 }
             ]
-        }
+        },
         
+        // Product api: http://localhost:5002/api/products
+        {
+            "UpstreamPathTemplate": "/products/{any}",
+            "UpstreamHttpMethod": [
+                "GET",
+                "PUT",
+                "DELETE"
+            ],
+            "DownstreamPathTemplate": "/api/products/{any}",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 5002
+                }
+            ]
+        },
+
+        {
+            "UpstreamPathTemplate": "/products",
+            "UpstreamHttpMethod": [
+                "GET",
+                "POST"
+            ],
+            "DownstreamPathTemplate": "/api/products",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 5002
+                }
+            ]
+        },
+
+        {
+            "UpstreamPathTemplate": "/products/get-product-by-no/{any}",
+            "UpstreamHttpMethod": [
+                "GET"
+            ],
+            "DownstreamPathTemplate": "/api/products/get-product-by-no/{any}",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 5002
+                }
+            ]
+        },
+
+        // Basket api: http://localhost:5004/api/baskets
+        {
+            "UpstreamPathTemplate": "/baskets/{username}",
+            "UpstreamHttpMethod": [
+                "GET",
+                "DELETE"
+            ],
+            "DownstreamPathTemplate": "/api/baskets/{username}",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 5004
+                }
+            ]
+        },
+
+        {
+            "UpstreamPathTemplate": "/baskets",
+            "UpstreamHttpMethod": [
+                "POST"
+            ],
+            "DownstreamPathTemplate": "/api/baskets",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 5004
+                }
+            ]
+        },
+
+        {
+            "UpstreamPathTemplate": "/baskets/checkout",
+            "UpstreamHttpMethod": [
+                "POST"
+            ],
+            "DownstreamPathTemplate": "/api/baskets/checkout",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 5004
+                }
+            ]
+        },
+
+        // Order api: http://localhost:5005/api/{version}/orders
+        {
+            "UpstreamPathTemplate": "/{version}/orders/{any}",
+            "UpstreamHttpMethod": [
+                "GET",
+                "PUT",
+                "DELETE"
+            ],
+            "DownstreamPathTemplate": "/api/{version}/orders/{any}",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 5005
+                }
+            ]
+        },
+
+        {
+            "UpstreamPathTemplate": "/{version}/orders",
+            "UpstreamHttpMethod": [
+                "POST"
+            ],
+            "DownstreamPathTemplate": "/api/{version}/orders",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 5005
+                }
+            ]
+        },
+
+        // Inventory API : http://localhost:5006/inventory
+        {
+            "UpstreamPathTemplate": "/inventory/items/{itemNo}",
+            "UpstreamHttpMethod": [
+                "GET"
+            ],
+            "DownstreamPathTemplate": "/api/inventory/items/{itemNo}",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 5006
+                }
+            ]
+        },
+        
+        {
+            "UpstreamPathTemplate": "/inventory/items/{itemNo}/paging",
+            "UpstreamHttpMethod": [
+                "GET"
+            ],
+            "DownstreamPathTemplate": "/api/inventory/items/{itemNo}/paging",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 5006
+                }
+            ]
+        },
+
+        {
+            "UpstreamPathTemplate": "/inventory/{id}",
+            "UpstreamHttpMethod": [
+                "GET",
+                "DELETE"
+            ],
+            "DownstreamPathTemplate": "/api/inventory/{id}",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 5006
+                }
+            ]
+        },
+
+        {
+            "UpstreamPathTemplate": "/inventory/purchase/{itemNo}",
+            "UpstreamHttpMethod": [
+                "POST"
+            ],
+            "DownstreamPathTemplate": "/api/inventory/purchase/{itemNo}",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 5006
+                }
+            ]
+        }
     ]
 }

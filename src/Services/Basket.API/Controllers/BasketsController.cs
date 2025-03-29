@@ -13,14 +13,14 @@ namespace Basket.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class BasketController : ControllerBase
+public class BasketsController : ControllerBase
 {
     private readonly IBasketRepository _repository;
     private readonly IPublishEndpoint _publishEndpoint;
     private readonly IMapper _mapper;
     private readonly StockItemGrpcService _stockItemGrpcService;
 
-    public BasketController(IBasketRepository repository, IPublishEndpoint publishEndpoint, IMapper mapper, StockItemGrpcService stockItemGrpcService)
+    public BasketsController(IBasketRepository repository, IPublishEndpoint publishEndpoint, IMapper mapper, StockItemGrpcService stockItemGrpcService)
     {
         _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         _publishEndpoint = publishEndpoint ?? throw new ArgumentNullException(nameof(publishEndpoint));
