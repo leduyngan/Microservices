@@ -41,6 +41,15 @@ try
      app.UseCors("CorsPolicy");
 
      app.UseMiddleware<ErrorWrappingMiddleware>();
+    app.UseAuthentication();
+    app.UseRouting();
+    app.UseEndpoints(endpoint =>
+    {
+        endpoint.MapGet("/", async context =>
+        {
+            await context.Response.WriteAsync($"Hello! This is {builder.Environment.ApplicationName}");
+        });
+    });
     
     // app.UseHttpsRedirection();
 

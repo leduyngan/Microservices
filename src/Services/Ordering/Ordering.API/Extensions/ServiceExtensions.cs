@@ -17,11 +17,12 @@ public static class ServiceExtensions
         var emailSettings = configuration.GetSection(nameof(SMTPEmailSetting))
             .Get<SMTPEmailSetting>();
         services.AddSingleton(emailSettings);
-        return services;
         
         var eventBusSettings = configuration.GetSection(nameof(EventBusSettings))
             .Get<EventBusSettings>();
         services.AddSingleton(eventBusSettings);
+        
+        return services;
     }
     
     public static void ConfigureMassTransit(this IServiceCollection services)
