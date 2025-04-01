@@ -72,7 +72,14 @@
                     "Host": "localhost",
                     "Port": 5002
                 }
-            ]
+            ],
+            "RateLimitOptions": {
+                "ClientWhitelist": [], // the client in this array is not be effected  by the rate limit
+                "EnableRateLimiting": true,
+                "Period": "2s", // 1s, 5m, 1h, 1d
+                "PeriodTimespan": 1, // retry after  certain number of seconds
+                "Limit": 1 // the maximum number of request that a client can make in a defined period
+            }
         },
 
         {
