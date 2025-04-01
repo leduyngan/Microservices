@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson.Serialization.Serializers;
 using Product.API.Entities;
 using Product.API.Repositories.Interfaces;
 using Shared.DTOs.Product;
@@ -21,10 +22,18 @@ public class ProductsController : ControllerBase
         _mapper = mapper;
     }
 
+    // private static int _count = 0;
+    
     #region CRUD
     [HttpGet]
     public async Task<IActionResult> GetProducts()
     {
+        // _count++;
+        // Console.WriteLine($"get...{_count}");
+        // if (_count < 3)
+        // {
+        //     Thread.Sleep(3000);
+        // }
         var products = await _repository.GetProducts();
         var result = _mapper.Map<IEnumerable<ProductDto>>(products);
         return Ok(result);
