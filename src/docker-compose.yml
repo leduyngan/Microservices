@@ -73,11 +73,11 @@ services:
       context: .
       dockerfile: Services/Inventory/Inventory.Grpc/Dockerfile
     
-    # apigw.ocelot:
-    #   image: ${DOCKER_REGISTRY-}apigw-ocelot:${PLATFORM:-linux}-${TAG:-latest}
-    #   build:
-    #     context: .
-    #     dockerfile: ApiGateways/OcelotApiGw/Dockerfile
+  apigw.ocelot:
+    image: ${DOCKER_REGISTRY-}apigw-ocelot:${PLATFORM:-linux}-${TAG:-latest}
+    build:
+      context: .
+      dockerfile: ApiGateways/OcelotApiGw/Dockerfile
     
     # hangfire.api:
     #   image: ${DOCKER_REGISTRY-}hangfire-api:${PLATFORM:-linux}-${TAG:-latest}
