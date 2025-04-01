@@ -1,4 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using Contracts.Identity;
 using Microsoft.AspNetCore.Identity;
@@ -28,8 +29,13 @@ public class TokenService : ITokenService
 
     private string GenerateEncryptedToken(SigningCredentials signingCredentials)
     {
+        var claims = new[]
+        {
+            new Claim("Role", "Admin"),
+        };
         var token = new JwtSecurityToken(
-            // expires: DateTime.Now.AddMinutes(60),
+            claims: claims,
+            expires: DateTime.Now.AddMinutes(60),
             signingCredentials: signingCredentials
             );
         var tokenHandler = new JwtSecurityTokenHandler();
