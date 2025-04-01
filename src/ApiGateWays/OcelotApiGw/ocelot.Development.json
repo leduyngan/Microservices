@@ -62,7 +62,6 @@
         {
             "UpstreamPathTemplate": "/products",
             "UpstreamHttpMethod": [
-                "GET",
                 "POST"
             ],
             "DownstreamPathTemplate": "/api/products",
@@ -84,6 +83,35 @@
                 "ExceptionsAllowedBeforeBreaking": 1, // If the service dose not response for 2 seconds, it will throw a timeout exception
                 "DurationOfBreak": 5000,
                 "TimeoutValue": 2000 // If the service throw a second exception, the service will not accessible for five seconds
+            }
+        },
+        {
+            "UpstreamPathTemplate": "/products",
+            "UpstreamHttpMethod": [
+                "GET"
+            ],
+            "DownstreamPathTemplate": "/api/products",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 5002
+                }
+            ],
+            "RateLimitOptions": {
+                "ClientWhitelist": [], // the client in this array is not be effected  by the rate limit
+                "EnableRateLimiting": true,
+                "Period": "2s", // 1s, 5m, 1h, 1d
+                "PeriodTimespan": 1, // retry after  certain number of seconds
+                "Limit": 1 // the maximum number of request that a client can make in a defined period
+            },
+            "QoSOptions": {
+                "ExceptionsAllowedBeforeBreaking": 1, // If the service dose not response for 2 seconds, it will throw a timeout exception
+                "DurationOfBreak": 5000,
+                "TimeoutValue": 2000 // If the service throw a second exception, the service will not accessible for five seconds
+            },
+            "FileCacheOptions": {
+                "TtlSeconds": 15 // cache seconds
             }
         },
         {
