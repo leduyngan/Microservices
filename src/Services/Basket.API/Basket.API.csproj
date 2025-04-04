@@ -47,4 +47,10 @@
       </Protobuf>
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="EmailTemplates\remider-checkout-order.html">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

@@ -4,6 +4,7 @@ using AutoMapper;
 using Basket.API.Entities;
 using Basket.API.GrpcServices;
 using Basket.API.Repositories.Interfaces;
+using Basket.API.Services.Interfaces;
 using EventBus.Messages.IntegrationEvents.Events;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
@@ -19,13 +20,15 @@ public class BasketsController : ControllerBase
     private readonly IPublishEndpoint _publishEndpoint;
     private readonly IMapper _mapper;
     private readonly StockItemGrpcService _stockItemGrpcService;
+    private readonly IEmailTemplateService _emailTemplateService;
 
-    public BasketsController(IBasketRepository repository, IPublishEndpoint publishEndpoint, IMapper mapper, StockItemGrpcService stockItemGrpcService)
+    public BasketsController(IBasketRepository repository, IPublishEndpoint publishEndpoint, IMapper mapper, StockItemGrpcService stockItemGrpcService, IEmailTemplateService emailTemplateService)
     {
         _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         _publishEndpoint = publishEndpoint ?? throw new ArgumentNullException(nameof(publishEndpoint));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _stockItemGrpcService = stockItemGrpcService ?? throw new ArgumentNullException(nameof(stockItemGrpcService));
+        _emailTemplateService = emailTemplateService;
     }
     
     [HttpGet("{userName}", Name = "GetBasket")]
@@ -78,4 +81,20 @@ public class BasketsController : ControllerBase
         
         return Accepted();
     }
+
+    [HttpPost("[action]", Name = "SendEmailReminder")]
+    public ContentResult SendEmailReminder()
+    {
+        var sdf = "wer";
+        var emailTemplate = _emailTemplateService.GenerateReminderCheckoutOrderEmail("u1@example.com", "test");
+
+        var result = new ContentResult
+        {
+            ContentType = "text/html",
+            Content = emailTemplate
+        };
+        
+        return result;
+    }
+    
 }
