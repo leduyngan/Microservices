@@ -20,7 +20,7 @@ public static class ServiceExtentions
 
     private static string GetMongoConnectionString(this IServiceCollection services)
     {
-        var settings = services.GetOption<MongoDbSettings>(nameof(MongoDbSettings));
+        var settings = services.GetOptions<MongoDbSettings>(nameof(MongoDbSettings));
         if (settings == null || string.IsNullOrEmpty(settings.ConnectionString))
         {
             throw new ArgumentException("The database settings are not configured correctly.");

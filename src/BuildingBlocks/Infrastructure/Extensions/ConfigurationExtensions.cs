@@ -5,7 +5,7 @@ namespace Infrastructure.Extensions;
 
 public static class ConfigurationExtensions
 {
-    public static T GetOption<T>(this IServiceCollection services, string sectionName) where T : new()
+    public static T GetOptions<T>(this IServiceCollection services, string sectionName) where T : new()
     {
         using var serviceProvider = services.BuildServiceProvider();
         var configuration = serviceProvider.GetRequiredService<IConfiguration>();

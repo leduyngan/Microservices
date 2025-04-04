@@ -22,12 +22,16 @@ public static class ServiceExtensions
             .Get<EventBusSettings>();
         services.AddSingleton(eventBusSettings);
         
+        var databaseSettings = configuration.GetSection(nameof(DatabaseSettings))
+            .Get<DatabaseSettings>();
+        services.AddSingleton(databaseSettings);
+        
         return services;
     }
     
     public static void ConfigureMassTransit(this IServiceCollection services)
     {
-        var settings = services.GetOption<EventBusSettings>("EventBusSettings");
+        var settings = services.GetOptions<EventBusSettings>("EventBusSettings");
         if (settings == null || string.IsNullOrEmpty(settings.HostAddress))
         {
             throw new ArgumentNullException("EventBusSetting is not configured.");

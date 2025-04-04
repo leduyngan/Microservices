@@ -39,7 +39,7 @@ public static class ServiceExtensions
     
     internal static IServiceCollection AddJwtAuthentication(this IServiceCollection services)
     {
-        var settings = services.GetOption<JwtSettings>(nameof(JwtSettings));
+        var settings = services.GetOptions<JwtSettings>(nameof(JwtSettings));
         if (settings == null || string.IsNullOrEmpty(settings.Key)) throw new ArgumentNullException($"{nameof(JwtSettings)} is not configured properly.");
         
         var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(settings.Key));

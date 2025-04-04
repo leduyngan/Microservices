@@ -37,7 +37,7 @@ public static class ServiceExtensions
 
     public static void ConfigureRedis(this IServiceCollection services, IConfiguration configuration)
     {
-        var settings = services.GetOption<CacheSettings>("CacheSettings");
+        var settings = services.GetOptions<CacheSettings>("CacheSettings");
         if (string.IsNullOrEmpty(settings?.ConnectionString))
         {
             throw new ArgumentNullException("Redis connection string is not configured.");
@@ -49,7 +49,7 @@ public static class ServiceExtensions
 
     public static IServiceCollection ConfigureGrpcServices(this IServiceCollection services)
     {
-        var settings = services.GetOption<GrpcSettings>(nameof(GrpcSettings));
+        var settings = services.GetOptions<GrpcSettings>(nameof(GrpcSettings));
         services.AddGrpcClient<StockProtoService.StockProtoServiceClient>(x => x.Address = new Uri(settings.StockUrl));
         services.AddScoped<StockItemGrpcService>();
         
@@ -58,7 +58,7 @@ public static class ServiceExtensions
     
     public static void ConfigureMassTransit(this IServiceCollection services)
     {
-        var settings = services.GetOption<EventBusSettings>("EventBusSettings");
+        var settings = services.GetOptions<EventBusSettings>("EventBusSettings");
         if (settings == null || string.IsNullOrEmpty(settings.HostAddress))
         {
             throw new ArgumentNullException("EventBusSetting is not configured.");

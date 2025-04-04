@@ -25,6 +25,10 @@ public static class ServiceExtensions
             .Get<JwtSettings>();
         services.AddSingleton(jwtSettings);
         
+        var databaseSettings = configuration.GetSection(nameof(DatabaseSettings))
+            .Get<DatabaseSettings>();
+        services.AddSingleton(databaseSettings);
+        
         return services;
     }
     
@@ -44,7 +48,7 @@ public static class ServiceExtensions
 
     internal static IServiceCollection AddJwtAuthentication(this IServiceCollection services)
     {
-        var settings = services.GetOption<JwtSettings>(nameof(JwtSettings));
+        var settings = services.GetOptions<JwtSettings>(nameof(JwtSettings));
         if (settings == null || string.IsNullOrEmpty(settings.Key)) throw new ArgumentNullException($"{nameof(JwtSettings)} is not configured properly.");
         
         var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(settings.Key));
@@ -74,8 +78,11 @@ public static class ServiceExtensions
     
     private static IServiceCollection ConfigureProductDbContext(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("DefaultConnectionString");
-        var builder = new MySqlConnectionStringBuilder(connectionString);
+        var databaseSettings = services.GetOptions<DatabaseSettings>(nameof(DatabaseSettings));
+        if (databaseSettings == null || string.IsNullOrEmpty(databaseSettings.ConnectionString))
+            throw new ArgumentNullException("Connection string is not configured.");
+        
+        var builder = new MySqlConnectionStringBuilder(databaseSettings.ConnectionString);
 
         services.AddDbContext<ProductContext>(m => m.UseMySql(builder.ConnectionString,
             ServerVersion.AutoDetect(builder.ConnectionString), e =>

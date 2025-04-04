@@ -2,11 +2,14 @@ using Common.Logging;
 using Contracts.Domains.Interfaces;
 using Customer.API.Context;
 using Customer.API.Controllers;
+using Customer.API.Extensions;
 using Customer.API.Persistence;
 using Customer.API.Repositories.Interfaces;
 using Customer.API.Services.Interfaces;
 using Infrastructure.Common;
 using Infrastructure.Common.Interfaces;
+using Infrastructure.Middlewares;
+using Infrastructure.ScheduledJobs;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -22,15 +25,16 @@ try
     builder.Services.AddControllers();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddConfigurationSettings(builder.Configuration);
     builder.Services.AddSwaggerGen();
+    builder.Services.ConfigureCustomerContext();
+    builder.Services.AddInfrastructureServices();
+    builder.Services.AddInfraHangfireService();
 
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionString");
-    builder.Services.AddDbContext<CustomerContext>(options => options.UseNpgsql(connectionString));
-
-    builder.Services.AddScoped(typeof(IRepositoryBase<,,>), typeof(RepositoryBase<,,>))
-        .AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>))
-        .AddScoped<ICustomerRepository, CustomerRepository>()
-        .AddScoped<ICustomerService, CustomerService>();
+    // builder.Services.AddScoped(typeof(IRepositoryBase<,,>), typeof(RepositoryBase<,,>))
+    //     .AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>))
+    //     .AddScoped<ICustomerRepository, CustomerRepository>()
+    //     .AddScoped<ICustomerService, CustomerService>();
 
     var app = builder.Build();
 
@@ -57,17 +61,15 @@ try
     if (app.Environment.IsDevelopment())
     {
         app.UseSwagger();
-        app.UseSwaggerUI(c =>
-        {
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json",
-                $"{builder.Environment.ApplicationName} v1"));
-        });
+        app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json",
+            $"{builder.Environment.ApplicationName} v1"));
     }
 
     // app.UseHttpsRedirection(); //production only
-
+    
+    app.UseMiddleware<ErrorWrappingMiddleware>();
     app.UseAuthorization();
-
+    app.UseHangfireDashboard(builder.Configuration);
     app.MapControllers();
 
     app.SeedCustomerData();
