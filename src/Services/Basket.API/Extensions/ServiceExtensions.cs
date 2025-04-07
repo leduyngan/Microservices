@@ -30,6 +30,10 @@ public static class ServiceExtensions
         var grpcSettings = configuration.GetSection(nameof(GrpcSettings))
             .Get<GrpcSettings>();
         services.AddSingleton(grpcSettings);
+        
+        var backgroundJobSettings = configuration.GetSection(nameof(BackgroundJobSettings))
+            .Get<BackgroundJobSettings>();
+        services.AddSingleton(backgroundJobSettings);
 
         return services;
     }
@@ -58,6 +62,11 @@ public static class ServiceExtensions
         services.AddScoped<StockItemGrpcService>();
 
         return services;
+    }
+
+    public static void ConfigureHttpClientService(this IServiceCollection services)
+    {
+        services.AddHttpClient<BackgroundJobHttpService>();
     }
 
     public static void ConfigureMassTransit(this IServiceCollection services)

@@ -2,5 +2,5 @@ namespace Basket.API.Services.Interfaces;
 
 public interface IEmailTemplateService
 {
-    string GenerateReminderCheckoutOrderEmail(string email, string userName);
+    string GenerateReminderCheckoutOrderEmail(string userName, string checkoutUrl = "baskets");
 }

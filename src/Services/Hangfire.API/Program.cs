@@ -1,6 +1,8 @@
+using Contracts.Services;
 using Hangfire;
 using Hangfire.API.Extensions;
 using Infrastructure.ScheduledJobs;
+using Infrastructure.Services;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -22,6 +24,8 @@ try
     builder.Services.AddSwaggerGen();
     builder.Services.AddInfraHangfireService();
     builder.Services.ConfigureServices();
+    
+    builder.Services.AddScoped<ISmtpEmailService, SmtpEmailService>();
 
     var app = builder.Build();
 

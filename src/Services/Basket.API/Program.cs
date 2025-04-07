@@ -21,8 +21,10 @@ try
     builder.Services.AddConfigurationSettings(builder.Configuration);
     builder.Services.AddAutoMapper(cfg => cfg.AddProfile(new MappingProfile()));
     builder.Services.ConfigureServices();
+    builder.Services.ConfigureHttpClientService();
     builder.Services.ConfigureRedis(builder.Configuration);
     builder.Services.ConfigureGrpcServices();
+    builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
     
     // Configure mass transit
     builder.Services.ConfigureMassTransit();
