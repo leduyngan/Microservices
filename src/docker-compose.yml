@@ -79,16 +79,16 @@ services:
       context: .
       dockerfile: ApiGateways/OcelotApiGw/Dockerfile
     
-    # hangfire.api:
-    #   image: ${DOCKER_REGISTRY-}hangfire-api:${PLATFORM:-linux}-${TAG:-latest}
-    #   build:
-    #     context: .
-    #     dockerfile: Services/Hangfire.API/Dockerfile
+  hangfire.api:
+    image: ${DOCKER_REGISTRY-}hangfire-api:${PLATFORM:-linux}-${TAG:-latest}
+    build:
+      context: .
+      dockerfile: Services/Hangfire.API/Dockerfile
 
 #network section
 networks:
   default:
-    name: tedu_microservices
+    name: microservices_network
     driver: bridge
 
 #volumes section
