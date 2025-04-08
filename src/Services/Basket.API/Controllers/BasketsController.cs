@@ -9,6 +9,7 @@ using EventBus.Messages.IntegrationEvents.Events;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
+using Shared.DTOs.Basket;
 
 namespace Basket.API.Controllers;
 
@@ -30,19 +31,21 @@ public class BasketsController : ControllerBase
     }
     
     [HttpGet("{userName}", Name = "GetBasket")]
-    [ProducesResponseType(typeof(Cart), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<Cart>> GetBasketByUserName([Required] string userName)
+    [ProducesResponseType(typeof(CartDto), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult<CartDto>> GetBasketByUserName([Required] string userName)
     {
-        var result = await _repository.GetBasketByUserName(userName);
-        return Ok(result ?? new Cart());
+        var cart = await _repository.GetBasketByUserName(userName);
+        var result = _mapper.Map<CartDto>(cart)?? new CartDto(userName);
+        
+        return Ok(result);
     }
 
     [HttpPost(Name = "UpdateBasket")]
     [ProducesResponseType(typeof(Cart), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<Cart>> UpdateBasket([FromBody] Cart cart)
+    public async Task<ActionResult<CartDto>> UpdateBasket([FromBody] CartDto model)
     {
         // Communicate with Inventory.Grpc and check quantity available of products
-        foreach (var item in cart.Items)
+        foreach (var item in model.Items)
         {
             var stock = await _stockItemGrpcService.GetStock(item.ItemNo);
             item.SetAvailableQuantity(stock.Quantity);
@@ -51,7 +54,9 @@ public class BasketsController : ControllerBase
             .SetAbsoluteExpiration(DateTime.UtcNow.AddHours(1))
             .SetSlidingExpiration(TimeSpan.FromMinutes(10));
         
-        var result = await _repository.UpdateBasket(cart, option);
+        var cart = _mapper.Map<Cart>(model);
+        var updateCart = await _repository.UpdateBasket(cart, option);
+        var result = _mapper.Map<CartDto>(updateCart);
         return Ok(result);
     }
 

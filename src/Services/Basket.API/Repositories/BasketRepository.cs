@@ -38,6 +38,7 @@ public class BasketRepository : IBasketRepository
 
     public async Task<Cart> UpdateBasket(Cart cart, DistributedCacheEntryOptions options = null)
     {
+        DeleteReminderCheckoutOrder(cart.Username);
         _logger.Information($"BEGIN: UpdateBasket for {cart.Username}");
         if (options != null)
         {
@@ -60,12 +61,23 @@ public class BasketRepository : IBasketRepository
         return await GetBasketByUserName(cart.Username);
     }
 
+    private async Task DeleteReminderCheckoutOrder(string username)
+    {
+        var cart = await GetBasketByUserName(username);
+        if(cart == null || string.IsNullOrEmpty(cart.JobId)) return;
+        
+        var jobId = cart.JobId;
+        var uri = $"{_backgroundJobHttp.ScheduleJobUrl}/delete/jobId/{jobId}";
+        _backgroundJobHttp.Client.DeleteAsync(uri);
+        _logger.Information($"DeleteReminderCheckoutOrder: Deleted jobId {jobId}");
+    }
+
     private async Task TriggerSendEmailReminderCheckout(Cart cart)
     {
         var emailTemplate = _emailTemplateService.GenerateReminderCheckoutOrderEmail(cart.Username);
         
-        var model = new ReminderCheckoutOrderDto(cart.EmailAddress, "Reminder Checkout", emailTemplate, DateTimeOffset.UtcNow.AddSeconds(10) );
-        const string uri = "/api/schedule-jobs/send-reminder-checkout-order-email";
+        var model = new ReminderCheckoutOrderDto(cart.EmailAddress, "Reminder Checkout", emailTemplate, DateTimeOffset.UtcNow.AddSeconds(30) );
+        var uri = $"{_backgroundJobHttp.ScheduleJobUrl}/send-reminder-checkout-order-email";
         var response = await _backgroundJobHttp.Client.PostAsJson(uri, model);
         if (response.EnsureSuccessStatusCode().IsSuccessStatusCode)
         {
@@ -80,6 +92,7 @@ public class BasketRepository : IBasketRepository
 
     public async Task<bool> DeleteBasketFromUserName(string username)
     {
+        DeleteReminderCheckoutOrder(username);
         try
         {
             _logger.Information($"BEGIN: DeleteBasketFromUserName {username}");
