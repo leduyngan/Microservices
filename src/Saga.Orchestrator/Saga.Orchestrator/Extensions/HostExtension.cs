@@ -1,4 +1,4 @@
-namespace Basket.API.Extensions;
+namespace Saga.Orchestrator.Extensions;
 
 public static class HostExtension
 {

@@ -75,6 +75,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inventory.Product.API", "sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inventory.Grpc", "src\Services\Inventory\Inventory.Grpc\Inventory.Grpc.csproj", "{C4A23F1A-0418-432A-AD7C-CFF9E01FDD36}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Saga.Orchestrator", "Saga.Orchestrator", "{1829A5AF-6236-4F24-9A6E-20436A42AB80}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saga.Orchestrator", "src\Saga.Orchestrator\Saga.Orchestrator\Saga.Orchestrator.csproj", "{5AD24367-4A77-427D-AAD5-F6C68C625BC5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -109,6 +113,8 @@ Global
 		{5B1A0BC8-D100-467E-BBE5-1A708CC7AA1E} = {0FA08331-3F3A-42FF-B4FE-E5885427F96A}
 		{274C48C6-71EB-464F-B5A7-AD1B13C1C42B} = {D63FEF7E-49F6-4EBB-80D1-65EA8763B059}
 		{C4A23F1A-0418-432A-AD7C-CFF9E01FDD36} = {D63FEF7E-49F6-4EBB-80D1-65EA8763B059}
+		{1829A5AF-6236-4F24-9A6E-20436A42AB80} = {F40E5820-B982-4742-93B5-77BCA4BDA08B}
+		{5AD24367-4A77-427D-AAD5-F6C68C625BC5} = {1829A5AF-6236-4F24-9A6E-20436A42AB80}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{BDAADE3D-A18E-47C9-997F-A1CA11578DB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -179,5 +185,9 @@ Global
 		{C4A23F1A-0418-432A-AD7C-CFF9E01FDD36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C4A23F1A-0418-432A-AD7C-CFF9E01FDD36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C4A23F1A-0418-432A-AD7C-CFF9E01FDD36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AD24367-4A77-427D-AAD5-F6C68C625BC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AD24367-4A77-427D-AAD5-F6C68C625BC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AD24367-4A77-427D-AAD5-F6C68C625BC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AD24367-4A77-427D-AAD5-F6C68C625BC5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -4,8 +4,8 @@ using System.Reflection.Metadata;
 using Contracts.Common.Events;
 using Contracts.Domains;
 using Contracts.Domains.Interfaces;
-using Ordering.Domain.Enums;
 using Ordering.Domain.OrderAggregate.Events;
+using Shared.Enums.Order;
 
 namespace Ordering.Domain.Entities;
 
