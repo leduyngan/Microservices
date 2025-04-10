@@ -1,10 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Basket.API.Entities;
+namespace Shared.DTOs.Basket;
 
-public class BasketCheckout
-{
-    [Required]
+public class BasketCheckoutDto
+{ 
+    [Required] 
     public string UserName { get; set; }
     public decimal TotalPrice { get; set; }
     [Required]

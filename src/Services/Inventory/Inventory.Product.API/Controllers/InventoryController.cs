@@ -31,7 +31,7 @@ public class InventoryController : ControllerBase
         var result = await _inventoryService.GetAllByItemNoAsync(itemNo);
         return Ok(result);
     }
-    
+
     /// <summary>
     /// api/inventory/items/{itemNo}/paging
     /// </summary>
@@ -39,13 +39,14 @@ public class InventoryController : ControllerBase
     [HttpGet]
     [Route("items/{itemNo}/paging", Name = "GetAllByItemNoPaging")]
     [ProducesResponseType(typeof(PagedList<InventoryEntryDto>), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<PagedList<InventoryEntryDto>>> GetAllByItemNoPaging([Required] string itemNo, [FromQuery] GetInventoryPagingQuery query)
+    public async Task<ActionResult<PagedList<InventoryEntryDto>>> GetAllByItemNoPaging([Required] string itemNo,
+        [FromQuery] GetInventoryPagingQuery query)
     {
         query.SetItemNo(itemNo);
         var result = await _inventoryService.GetAllByItemNoPageingAsync(query);
         return Ok(result);
     }
-    
+
     /// <summary>
     /// api/inventory/{id}
     /// </summary>
@@ -58,19 +59,29 @@ public class InventoryController : ControllerBase
         var result = await _inventoryService.GetByIdAsync(id);
         return Ok(result);
     }
-    
+
     /// <summary>
     /// api/inventory/purchase/{itemNo}
     /// </summary>
     /// <returns></returns>
     [HttpPost("purchase/{itemNo}", Name = "PurchaseOrder")]
     [ProducesResponseType(typeof(InventoryEntryDto), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<InventoryEntryDto>> PurchaseOrder([Required] string itemNo, [FromBody] PurchaseProductDto model)
+    public async Task<ActionResult<InventoryEntryDto>> PurchaseOrder([Required] string itemNo,
+        [FromBody] PurchaseProductDto model)
     {
         var result = await _inventoryService.PurchaseItemAsync(itemNo, model);
         return Ok(result);
     }
-    
+
+    [HttpPost("sales/{itemNo}", Name = "SalesOrder")]
+    [ProducesResponseType(typeof(InventoryEntryDto), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult<InventoryEntryDto>> SalesOrder([Required] string itemNo,
+        [FromBody] SalesProductDto model)
+    {
+        var result = await _inventoryService.SalesItemAsync(itemNo, model);
+        return Ok(result);
+    }
+
     /// <summary>
     /// api/inventory/{id}
     /// </summary>
@@ -82,6 +93,14 @@ public class InventoryController : ControllerBase
         var entity = await _inventoryService.GetByIdAsync(id);
         if (entity == null) return NotFound();
         await _inventoryService.DeleteAsync(id);
+        return NoContent();
+    }
+
+    [HttpDelete("document-no/{documentNo}", Name = "DeleteByDocumentNo")]
+    [ProducesResponseType(typeof(InventoryEntryDto), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult> DeleteByDocumentNo([Required] string documentNo)
+    {
+        await _inventoryService.DeleteByDocumentNoAsync(documentNo);
         return NoContent();
     }
 }
