@@ -20,8 +20,13 @@ public class BasketHttpRepository : IBasketHttpRepository
         return cart;
     }
 
-    public Task<bool> DeleteBasket(string username)
+    public async Task<bool> DeleteBasket(string username)
     {
-        throw new NotImplementedException();
+       var response = await _client.DeleteAsync($"baskets/{username}");
+       if(!response.EnsureSuccessStatusCode().IsSuccessStatusCode)
+           throw new Exception($"Delete basket for UserName: {username} not success");
+
+       var result = response.IsSuccessStatusCode;
+       return result;
     }
 }
