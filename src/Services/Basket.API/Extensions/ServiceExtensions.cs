@@ -1,4 +1,6 @@
+using System.Reflection;
 using Basket.API.GrpcServices;
+using Basket.API.IntegrationEvents;
 using Basket.API.Repositories;
 using Basket.API.Repositories.Interfaces;
 using Basket.API.Services;
@@ -81,9 +83,17 @@ public static class ServiceExtensions
         services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
         services.AddMassTransit(config =>
         {
-            config.UsingRabbitMq((ctx, cfg) => { cfg.Host(mqConnection); });
+            config.AddConsumers(Assembly.GetExecutingAssembly());
+            config.UsingRabbitMq((context, cfg) =>
+            {
+                cfg.Host(mqConnection);
+                cfg.ConfigureEndpoints(context);
+                // cfg.ReceiveEndpoint("get-basket", e => e.ConfigureConsumer<GetBasketConsumer>(context));
+                // cfg.ReceiveEndpoint("delete-basket", e => e.ConfigureConsumer<DeleteBasketConsumer>(context));
+            });
 
             config.AddRequestClient<IBasketCheckOutEvent>();
+            
         });
     }
 }

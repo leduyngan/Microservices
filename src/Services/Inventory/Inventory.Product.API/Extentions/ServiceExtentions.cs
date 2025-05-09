@@ -1,7 +1,10 @@
+using System.Reflection;
 using Infrastructure.Extensions;
 using Inventory.Product.API.Entities;
 using Inventory.Product.API.Services;
 using Inventory.Product.API.Services.Interfaces;
+using MassTransit;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using MongoDB.Driver;
 using Shared.Configurations;
 
@@ -36,6 +39,27 @@ public static class ServiceExtentions
         services.AddSingleton<IMongoClient>(
             new MongoClient(GetMongoConnectionString(services)))
             .AddScoped(x => x.GetService<IMongoClient>()?.StartSession());
+    }
+    
+    public static void ConfigureMassTransit(this IServiceCollection services)
+    {
+        var settings = services.GetOptions<EventBusSettings>("EventBusSettings");
+        if (settings == null || string.IsNullOrEmpty(settings.HostAddress))
+        {
+            throw new ArgumentNullException("EventBusSetting is not configured.");
+        }
+
+        var mqConnection = new Uri(settings.HostAddress);
+        services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
+        services.AddMassTransit(config =>
+        {
+            config.AddConsumers(Assembly.GetExecutingAssembly());
+            config.UsingRabbitMq((context, cfg) =>
+            {
+                cfg.Host(mqConnection);
+                cfg.ConfigureEndpoints(context);
+            });
+        });
     }
     
     public static void AddInfrastructureServices(this IServiceCollection services)

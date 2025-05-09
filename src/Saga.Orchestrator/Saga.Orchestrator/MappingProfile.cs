@@ -10,6 +10,7 @@ public class MappingProfile : Profile
     public MappingProfile()
     {
         CreateMap<BasketCheckoutDto, CreateOrderDto>();
+        CreateMap<CartDto, CreateOrderDto>().ReverseMap();
         CreateMap<CartItemDto, SaleItemDto>();
     }
 }

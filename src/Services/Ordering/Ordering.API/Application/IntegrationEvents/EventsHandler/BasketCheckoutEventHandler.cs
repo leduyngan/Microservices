@@ -4,6 +4,7 @@ using MassTransit;
 using MediatR;
 using Ordering.Application.Features.V1.Orders;
 using Ordering.Application.Features.V1.Orders.Commands.CreateOrder;
+using CreateOrderCommand = Ordering.Application.Features.V1.Orders.CreateOrderCommand;
 using ILogger = Serilog.ILogger;
 
 
@@ -30,4 +31,4 @@ public class BasketCheckoutEventHandler : IConsumer<BasketCheckoutEvent>
         _logger.Information("BasketCheckoutEvent consumed successfully. " +
                             "Order is created with Id: {newOrderId}", result.Data);
     }
-}
+} 

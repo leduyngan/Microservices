@@ -12,6 +12,6 @@ public interface IInventoryService : IMongoDbRepositoryBase<InventoryEntry>
     Task<InventoryEntryDto> GetByIdAsync(string id);
     Task<InventoryEntryDto> PurchaseItemAsync(string itemNo, PurchaseProductDto model);
     Task<InventoryEntryDto> SalesItemAsync(string itemNo, SalesProductDto model);
-    Task DeleteByDocumentNoAsync(string documentNo);
+    Task<bool> DeleteByDocumentNoAsync(string documentNo);
     Task<string> SalesOrderAsync(SalesOrderDto model);
 }

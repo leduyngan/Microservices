@@ -18,6 +18,7 @@ try
     builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
     builder.Services.AddInfrastructureServices();
     builder.Services.ConfigureMongoDbClient();
+    builder.Services.ConfigureMassTransit();
 
     var app = builder.Build();
 

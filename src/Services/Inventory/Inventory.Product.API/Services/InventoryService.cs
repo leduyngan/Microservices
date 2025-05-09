@@ -87,10 +87,11 @@ public class InventoryService : MongoDbRepository<InventoryEntry>, IInventorySer
         return result;
     }
 
-    public async Task DeleteByDocumentNoAsync(string documentNo)
+    public async Task<bool> DeleteByDocumentNoAsync(string documentNo)
     {
         FilterDefinition<InventoryEntry> filter = Builders<InventoryEntry>.Filter.Eq(x => x.DocumentNo, documentNo);
-        await Collection.DeleteOneAsync(filter);
+       var result = await Collection.DeleteOneAsync(filter);
+       return result.IsAcknowledged && result.DeletedCount > 0;
     }
 
     public async Task<string> SalesOrderAsync(SalesOrderDto model)
