@@ -31,7 +31,14 @@ public class BasketRepository : IBasketRepository
     {
         _logger.Information($"BEGIN: GetBasketByUserName {username}");
         var basket = await _redisCacheService.GetStringAsync(username);
-        _logger.Information($"END: GetBasketByUserName {username}");
+        
+        if (!string.IsNullOrEmpty(basket))
+        {
+            var result = _serializeService.Deserialize<Cart>(basket);
+            var totalPrice = result.TotalPrice;
+            _logger.Information("END: GetBasketByUserName {username} - Total Price: {totalPrice}", username, totalPrice);
+            return result;
+        }
         
         return string.IsNullOrEmpty(basket) ? null : _serializeService.Deserialize<Cart>(basket);
     }
@@ -56,7 +63,7 @@ public class BasketRepository : IBasketRepository
         }
         catch (Exception e)
         {
-            _logger.Error(e.Message);
+            _logger.Error($"UpdateBasket failed: {e.Message}");
         }
         return await GetBasketByUserName(cart.Username);
     }

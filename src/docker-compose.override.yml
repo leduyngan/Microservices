@@ -114,8 +114,11 @@ services:
     environment:
       - xpack.monitoring.enabled=true
       - xpack.watcher.enabled=false
+      - xpack.security.enabled=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - discovery.type=single-node
+      - ELASTIC_USERNAME=elastic #default username
+      - ELASTIC_PASSWORD=admin
     ports:
       - "9200:9200"
     volumes:
@@ -125,6 +128,8 @@ services:
     container_name: kibana
     environment:
       - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=admin
     depends_on:
       - elasticsearch
     ports:
