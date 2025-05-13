@@ -16,6 +16,9 @@ services:
 
   inventorydb:
     image: mongo
+    
+  sagadb:
+    image: mcr.microsoft.com/mssql/server:2019-latest
   
   hangfiredb:
     image: mongo
@@ -109,6 +112,8 @@ volumes:
     name: mongo_data
   pgadmin_data:
     name: pgadmin_data
+  sqlserver_saga_data:
+    name: sqlserver_saga_data
   hangfire_mongo_data:
     name: hangfire_mongo_data
   

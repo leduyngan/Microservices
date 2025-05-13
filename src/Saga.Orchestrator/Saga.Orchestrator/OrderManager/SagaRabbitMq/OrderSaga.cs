@@ -1,6 +1,7 @@
 using AutoMapper;
 using EventBus.Messages.IntegrationEvents.Events;
 using MassTransit;
+using Saga.Orchestrator.OrderManager;
 using Shared.DTOs.Basket;
 using Shared.DTOs.Inventory;
 using Shared.DTOs.Order;
@@ -68,7 +69,7 @@ public class OrderSaga : MassTransitStateMachine<OrderSagaState>
                             CorrelationId = context.Message.CorrelationId,
                             Order = order
                         });
-                        context.Instance.CurrentState = OrderCreation;
+                        context.Instance.CurrentState = nameof(OrderCreation);
                     }
                     else
                     {
@@ -78,7 +79,8 @@ public class OrderSaga : MassTransitStateMachine<OrderSagaState>
                             CorrelationId = context.Message.CorrelationId,
                             Success = false
                         });
-                        context.Instance.CurrentState = Failed;
+                        context.Instance.CurrentState = nameof(Failed);
+                        context.SetCompleted();
                     }
                 })
         );
@@ -97,7 +99,7 @@ public class OrderSaga : MassTransitStateMachine<OrderSagaState>
                             CorrelationId = context.Message.CorrelationId,
                             OrderId = context.Message.OrderId
                         });
-                        context.Instance.CurrentState = OrderRetrieval;
+                        context.Instance.CurrentState = nameof(OrderRetrieval);
                     }
                     else
                     {
@@ -107,7 +109,8 @@ public class OrderSaga : MassTransitStateMachine<OrderSagaState>
                             CorrelationId = context.Message.CorrelationId,
                             Success = false
                         });
-                        context.Instance.CurrentState = Failed;
+                        context.Instance.CurrentState = nameof(Failed);
+                        context.SetCompleted();
                     }
                 })
         );
@@ -129,7 +132,7 @@ public class OrderSaga : MassTransitStateMachine<OrderSagaState>
                                 SaleItems = _mapper.Map<List<SaleItemDto>>(cartDto.Items)
                             }
                         });
-                        context.Instance.CurrentState = InventoryUpdate;
+                        context.Instance.CurrentState = nameof(InventoryUpdate);
                     }
                     else
                     {
@@ -144,7 +147,7 @@ public class OrderSaga : MassTransitStateMachine<OrderSagaState>
                             CorrelationId = context.Message.CorrelationId,
                             Success = false
                         });
-                        context.Instance.CurrentState = Rollback;
+                        context.Instance.CurrentState = nameof(Rollback);
                     }
                 })
         );
@@ -162,7 +165,7 @@ public class OrderSaga : MassTransitStateMachine<OrderSagaState>
                             CorrelationId = context.Message.CorrelationId,
                             UserName = context.Instance.UserName
                         });
-                        context.Instance.CurrentState = BasketDeletion;
+                        context.Instance.CurrentState = nameof(BasketDeletion);
                     }
                     else
                     {
@@ -177,7 +180,7 @@ public class OrderSaga : MassTransitStateMachine<OrderSagaState>
                             CorrelationId = context.Message.CorrelationId,
                             Success = false
                         });
-                        context.Instance.CurrentState = Rollback;
+                        context.Instance.CurrentState = nameof(Rollback);
                     }
                 })
         );
@@ -194,7 +197,8 @@ public class OrderSaga : MassTransitStateMachine<OrderSagaState>
                             CorrelationId = context.Message.CorrelationId,
                             Success = true
                         });
-                        context.Instance.CurrentState = Completed;
+                        context.Instance.CurrentState = nameof(Completed);
+                        context.SetCompleted();
                     }
                     else
                     {
@@ -209,7 +213,7 @@ public class OrderSaga : MassTransitStateMachine<OrderSagaState>
                         //     CorrelationId = context.Message.CorrelationId,
                         //     Success = false
                         // });
-                        context.Instance.CurrentState = Rollback;
+                        context.Instance.CurrentState = nameof(Rollback);
                     }
                 })
         );
@@ -224,7 +228,7 @@ public class OrderSaga : MassTransitStateMachine<OrderSagaState>
                         CorrelationId = context.Message.CorrelationId,
                         OrderId = orderId
                     });
-                    context.Instance.CurrentState = OrderDeletion;
+                    context.Instance.CurrentState = nameof(OrderDeletion);
                 })
         );
 
@@ -238,24 +242,8 @@ public class OrderSaga : MassTransitStateMachine<OrderSagaState>
                         CorrelationId = context.Message.CorrelationId,
                         Success = false
                     });
-                    context.Instance.CurrentState = Failed;
+                    context.Instance.CurrentState = nameof(Failed);
                 })
         );
-
-        SetCompletedWhenFinalized();
-        _logger.Information("SetCompletedWhenFinalized() called for OrderSaga");
     }
-
-}
-
-// Order Saga State
-public class OrderSagaState : SagaStateMachineInstance
-{
-    public Guid CorrelationId { get; set; }
-    public State CurrentState { get; set; }
-    public string UserName { get; set; }
-    public CartDto Cart { get; set; }
-    public long OrderId { get; set; }
-    public OrderDto Order { get; set; }
-    public string InventoryDocumentNo { get; set; }
 }

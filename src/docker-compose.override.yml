@@ -56,6 +56,18 @@ services:
     volumes:
       - mongo_data:/data/db
   
+  #sagadb: sql server
+  sagadb:
+    container_name: sagadb
+    environment:
+      SA_PASSWORD: "Passw0rd!"
+      ACCEPT_EULA: "Y"
+    restart: always
+    volumes:
+      - sqlserver_saga_data:/var/lib/sqlserver/saga_data
+    ports:
+      - "1436:1433"     
+  
   hangfiredb:
     container_name: hangfiredb
     restart: always

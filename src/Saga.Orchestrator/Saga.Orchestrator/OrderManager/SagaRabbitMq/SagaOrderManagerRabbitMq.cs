@@ -58,30 +58,9 @@ public class SagaOrderManagerRabbitMq : ISagaOrderManagerRabbitMq<BasketCheckout
         }
     }
 
-    public async Task<OrderResponse> RollbackOrder(string username, string documentNo, long orderId)
+    public Task<OrderResponse> RollbackOrder(string username, string documentNo, long orderId)
     {
-        try
-        {
-            var correlationId = Guid.NewGuid();
-            _logger.Information("Starting Saga rollback with CorrelationId: {CorrelationId}", correlationId);
-
-            var tcs = new TaskCompletionSource<bool>();
-            _sagaCompletions.TryAdd(correlationId, tcs);
-
-            await _busControl.Publish(new DeleteInventoryEvent
-            {
-                CorrelationId = correlationId,
-                DocumentNo = documentNo
-            });
-
-            var result = await WaitForSagaCompletion(correlationId);
-            return new OrderResponse(result);
-        }
-        catch (Exception ex)
-        {
-            _logger.Error(ex, "Failed to initiate rollback saga");
-            return new OrderResponse(false);
-        }
+        throw new NotImplementedException();
     }
 
     private async Task<bool> WaitForSagaCompletion(Guid correlationId)
@@ -118,54 +97,4 @@ public class SagaOrderManagerRabbitMq : ISagaOrderManagerRabbitMq<BasketCheckout
             _sagaCompletions.TryRemove(correlationId, out _);
         }
     }
-
-    public class SagaCompletedConsumer : IConsumer<SagaCompletedEvent>
-    {
-        private readonly Serilog.ILogger _logger;
-        private readonly ConcurrentDictionary<Guid, TaskCompletionSource<bool>> _sagaCompletions;
-
-        public SagaCompletedConsumer(Serilog.ILogger logger, ConcurrentDictionary<Guid, TaskCompletionSource<bool>> sagaCompletions)
-        {
-            _logger = logger;
-            _sagaCompletions = sagaCompletions;
-        }
-
-        public Task Consume(ConsumeContext<SagaCompletedEvent> context)
-        {
-            var correlationId = context.Message.CorrelationId;
-            _logger.Information("Received SagaCompletedEvent for CorrelationId: {CorrelationId}, Success: {Success}",
-                correlationId, context.Message.Success);
-            var isGetValue = _sagaCompletions.TryGetValue(correlationId, out var tcs);
-                
-            if (isGetValue)
-            {
-                tcs.TrySetResult(context.Message.Success);
-            }
-            else
-            {
-                _logger.Warning("No TaskCompletionSource found for CorrelationId: {CorrelationId}", correlationId);
-            }
-
-            return Task.CompletedTask;
-        }
-    }
-    //
-    // public class SagaCompletedConsumer1 : IConsumer<SagaCompletedEvent>
-    // {
-    //     private readonly Serilog.ILogger _logger;
-    //
-    //     public SagaCompletedConsumer1(Serilog.ILogger logger)
-    //     {
-    //         _logger = logger;
-    //     }
-    //
-    //     public Task Consume(ConsumeContext<SagaCompletedEvent> context)
-    //     {
-    //         var correlationId = context.Message.CorrelationId;
-    //         _logger.Information("Received SagaCompletedEvent for CorrelationId: {CorrelationId}, Success: {Success}",
-    //             correlationId, context.Message.Success);
-    //
-    //         return Task.CompletedTask;
-    //     }
-    // }
 }

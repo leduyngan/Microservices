@@ -5,6 +5,7 @@ using EventBus.Messages.IntegrationEvents.Events;
 using EventBus.Messages.IntegrationEvents.Interfaces;
 using Infrastructure.Extensions;
 using MassTransit;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Saga.Orchestrator.HttpRepository;
 using Saga.Orchestrator.HttpRepository.Interfaces;
@@ -79,9 +80,22 @@ public static class ServiceExtensions
         }
         var mqConnection = new Uri(settings.HostAddress);
         services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
+        
+        // Thêm DbContext cho Saga
+        services.AddDbContext<SagaDbContext>(options =>
+            options.UseSqlServer(settings.SqlServerConnectionString, sqlOptions =>
+            {
+                sqlOptions.EnableRetryOnFailure();
+            }));
         services.AddMassTransit(config =>
         {
-            config.AddSagaStateMachine<OrderSaga, OrderSagaState>().InMemoryRepository();
+            // config.AddSagaStateMachine<OrderSaga, OrderSagaState>().InMemoryRepository();
+            config.AddSagaStateMachine<OrderSaga, OrderSagaState>()
+                .EntityFrameworkRepository(r =>
+                {
+                    r.ConcurrencyMode = ConcurrencyMode.Optimistic;
+                    r.ExistingDbContext<SagaDbContext>();
+                });
             config.AddConsumers(Assembly.GetExecutingAssembly());
             config.UsingRabbitMq((context, cfg) =>
             {
