@@ -63,7 +63,7 @@ public class BasketRepository : IBasketRepository
         }
         catch (Exception e)
         {
-            _logger.Error($"UpdateBasket failed: {e.Message}");
+            _logger.Error($"UpdateBasket send mail failed: {e.Message}");
         }
         return await GetBasketByUserName(cart.Username);
     }
