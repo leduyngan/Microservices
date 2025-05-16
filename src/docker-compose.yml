@@ -88,6 +88,11 @@ services:
       context: .
       dockerfile: Services/Hangfire.API/Dockerfile
 
+  webstatus:
+    image: ${DOCKER_REGISTRY-}webstatus:${PLATFORM:-linux}-${TAG:-latest}
+    build:
+      context: .
+      dockerfile: WebApps/WebHealthStatus/Dockerfile
 #network section
 networks:
   default:
