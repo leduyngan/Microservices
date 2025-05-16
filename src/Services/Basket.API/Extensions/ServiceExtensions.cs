@@ -14,6 +14,7 @@ using Infrastructure.Policies;
 using Inventory.Grpc.Client;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Shared.Configurations;
 
 namespace Basket.API.Extensions;
@@ -34,7 +35,7 @@ public static class ServiceExtensions
         var grpcSettings = configuration.GetSection(nameof(GrpcSettings))
             .Get<GrpcSettings>();
         services.AddSingleton(grpcSettings);
-        
+
         var backgroundJobSettings = configuration.GetSection(nameof(BackgroundJobSettings))
             .Get<BackgroundJobSettings>();
         services.AddSingleton(backgroundJobSettings);
@@ -42,12 +43,17 @@ public static class ServiceExtensions
         return services;
     }
 
-    public static IServiceCollection ConfigureServices(this IServiceCollection services) =>
+    public static IServiceCollection ConfigureServices(this IServiceCollection services)
+    {
         services.AddScoped<IBasketRepository, BasketRepository>()
             .AddTransient<ISerializeService, SerializeService>()
             .AddTransient<IEmailTemplateService, BasketEmailTemplateService>()
-            .AddTransient<LoggingDelegatingHandler>();
-
+            .AddTransient<LoggingDelegatingHandler>()
+            ;
+        services.ConfrugreHealthChecks();
+        return services;
+    }
+       
     public static void ConfigureRedis(this IServiceCollection services, IConfiguration configuration)
     {
         var settings = services.GetOptions<CacheSettings>("CacheSettings");
@@ -101,7 +107,15 @@ public static class ServiceExtensions
             });
 
             config.AddRequestClient<IBasketCheckOutEvent>();
-            
         });
+    }
+
+    private static void ConfrugreHealthChecks(this IServiceCollection services)
+    {
+        var databaseSettings = services.GetOptions<CacheSettings>("CacheSettings");
+        services.AddHealthChecks()
+            .AddRedis(databaseSettings.ConnectionString,
+                name: "MySql Health",
+                failureStatus: HealthStatus.Degraded);
     }
 }

@@ -1,8 +1,10 @@
 using Contracts.Services;
 using Hangfire;
 using Hangfire.API.Extensions;
+using HealthChecks.UI.Client;
 using Infrastructure.ScheduledJobs;
 using Infrastructure.Services;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -45,6 +47,11 @@ try
 
     app.UseEndpoints(endpoints =>
     {
+        endpoints.MapHealthChecks("/hc", new HealthCheckOptions()
+        {
+            Predicate = _ => true,
+            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+        });
         endpoints.MapDefaultControllerRoute();
     });
 

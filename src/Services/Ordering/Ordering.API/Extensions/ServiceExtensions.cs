@@ -5,6 +5,7 @@ using Infrastructure.Configurations;
 using Infrastructure.Extensions;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Ordering.API.Application.IntegrationEvents.EventHandler;
 using Shared.Configurations;
 
@@ -25,7 +26,7 @@ public static class ServiceExtensions
         var databaseSettings = configuration.GetSection(nameof(DatabaseSettings))
             .Get<DatabaseSettings>();
         services.AddSingleton(databaseSettings);
-        
+        services.ConfrugreHealthChecks();
         return services;
     }
     
@@ -56,5 +57,14 @@ public static class ServiceExtensions
                 cfg.ConfigureEndpoints(ctx);
             });
         });
+    }
+    
+    private static void ConfrugreHealthChecks(this IServiceCollection services)
+    {
+        var databaseSettings = services.GetOptions<DatabaseSettings>(nameof(DatabaseSettings));
+        services.AddHealthChecks()
+            .AddSqlServer(databaseSettings.ConnectionString,
+                name: "SqlServer Health",
+                failureStatus: HealthStatus.Degraded);
     }
 }

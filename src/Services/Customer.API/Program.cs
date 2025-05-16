@@ -6,10 +6,12 @@ using Customer.API.Extensions;
 using Customer.API.Persistence;
 using Customer.API.Repositories.Interfaces;
 using Customer.API.Services.Interfaces;
+using HealthChecks.UI.Client;
 using Infrastructure.Common;
 using Infrastructure.Common.Interfaces;
 using Infrastructure.Middlewares;
 using Infrastructure.ScheduledJobs;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -73,6 +75,16 @@ try
     app.MapControllers();
 
     app.SeedCustomerData();
+    app.UseRouting();
+    app.UseEndpoints(endpoints =>
+    {
+        endpoints.MapHealthChecks("/hc", new HealthCheckOptions()
+        {
+            Predicate = _ => true,
+            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+        });
+        endpoints.MapDefaultControllerRoute();
+    });
 
     app.Run();
 }

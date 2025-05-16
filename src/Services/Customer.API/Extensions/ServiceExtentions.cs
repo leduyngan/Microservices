@@ -6,6 +6,7 @@ using Infrastructure.Common;
 using Infrastructure.Common.Interfaces;
 using Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Shared.Configurations;
 
 namespace Customer.API.Extensions;
@@ -22,6 +23,7 @@ public static class ServiceExtentions
         var hangFireSettings = configuration.GetSection(nameof(HangfireSettings))
             .Get<HangfireSettings>();
         services.AddSingleton(hangFireSettings);
+        services.ConfrugreHealthChecks();
 
         return services;
     }
@@ -40,6 +42,16 @@ public static class ServiceExtentions
         services.AddScoped(typeof(IRepositoryBase<,,>), typeof(RepositoryBase<,,>))
             .AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>))
             .AddScoped<ICustomerRepository, CustomerRepository>()
-            .AddScoped<ICustomerService, CustomerService>();
+            .AddScoped<ICustomerService, CustomerService>()
+            ;
+    }
+    
+    private static void ConfrugreHealthChecks(this IServiceCollection services)
+    {
+        var databaseSettings = services.GetOptions<DatabaseSettings>(nameof(DatabaseSettings));
+        services.AddHealthChecks()
+            .AddNpgSql(databaseSettings.ConnectionString,
+                name: "MySql Health",
+                failureStatus: HealthStatus.Degraded);
     }
 }

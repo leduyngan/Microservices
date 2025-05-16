@@ -1,6 +1,8 @@
 using Basket.API;
 using Basket.API.Extensions;
 using Common.Logging;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Org.BouncyCastle.Cms;
 using Serilog;
 
@@ -47,8 +49,17 @@ try
     }
 
     // app.UseHttpsRedirection(); //production only
-
+    app.UseRouting();
     app.UseAuthorization();
+    app.UseEndpoints(endpoints =>
+    {
+        endpoints.MapHealthChecks("/hc", new HealthCheckOptions()
+        {
+            Predicate = _ => true,
+            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+        });
+        endpoints.MapDefaultControllerRoute();
+    });
 
     app.MapControllers();
 
