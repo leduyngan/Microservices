@@ -73,8 +73,10 @@ public static class ServiceExtensions
     {
         services.AddHttpClient<BackgroundJobHttpService>()
             //.AddHttpMessageHandler<LoggingDelegatingHandler>()
-            .UseImmediateHttpRetryPolicy();
-            //.UseCircuitBreakerPolicy();
+            .UseImmediateHttpRetryPolicy()
+            .ConfigureTimeoutPolicy()
+            //.UseCircuitBreakerPolicy()
+            ;
     }
 
     public static void ConfigureMassTransit(this IServiceCollection services)

@@ -108,14 +108,14 @@ public static class ServiceExtensions
                 cfg.Host(mqConnection);
                 cfg.ConfigureEndpoints(context);
                 cfg.UseInMemoryOutbox();
+                cfg.UseRetry(r => r.Interval(3, TimeSpan.FromSeconds(5)));
                 // cfg.ReceiveEndpoint("saga-completion", e =>
                 // {
                 //     e.Consumer(() => new SagaOrderManagerRabbitMq.SagaCompletedConsumer(
                 //         context.GetService<Serilog.ILogger>(),
                 //         context.GetService<ConcurrentDictionary<Guid, TaskCompletionSource<bool>>>()));
                 // });
-                // cfg.UseRetry(r => r.Interval(3, TimeSpan.FromSeconds(5)));
-
+                // 
                 // cfg.ReceiveEndpoint("order-saga", e =>
                 // {
                 //     e.ConfigureSaga<OrderSagaState>(context);

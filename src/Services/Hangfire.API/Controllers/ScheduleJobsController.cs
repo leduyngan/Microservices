@@ -17,8 +17,9 @@ public class ScheduleJobsController : ControllerBase
 
     [HttpPost]
     [Route("send-reminder-checkout-order-email")]
-    public IActionResult SendReminderCheckoutOrderEmail([FromBody] ReminderCheckoutOrderDto model)
+    public async Task<IActionResult> SendReminderCheckoutOrderEmail([FromBody] ReminderCheckoutOrderDto model)
     {
+        // await Task.Delay(10000); // simulate some delay for 10 seconds
         var jobId = _jobService.SendEmailContent(model.email, model.subject, model.emailContent, model.enqueueAt);
         return Ok(jobId);
     }
